@@ -1,4 +1,4 @@
-FROM centos:latest
+FROM centos:centos6
 MAINTAINER Feng Honglin <hfeng@tutum.co>
 
 # Install packages and set up sshd
