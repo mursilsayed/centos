@@ -1,11 +1,7 @@
-FROM centos:centos6
+FROM oraclelinux:6
 MAINTAINER Mursil Sayed <mursilsayed@gmail.com>
-#Custom centos6 image with SSH support and a startup script that launches sshd
+#Custom oracle linux 6 image with SSH support and supervisor module that launches sshd
 
-
-# Cpoying the yum configuring file needed to download packages behind Packages
-#COPY yum.conf /etc/yum.conf
-RUN echo "proxy=http://172.17.42.1:3128" >> /etc/yum.conf
 
 # Install packages and set up sshd
 RUN yum -y install openssh-server telnet openssh-clients
@@ -16,16 +12,18 @@ RUN ssh-keygen -q -N "" -t dsa -f /etc/ssh/ssh_host_dsa_key && ssh-keygen -q -N 
 RUN echo "root:root"|chpasswd
 
 
-#Creating volume for holding instance specific files
-VOLUME /Applications
+# Supervisord dependencies and other needed packages
+RUN yum install -y python-meld3 python-setuptools passwd hostname net-tools
+# Supervisord Install
+RUN easy_install supervisor
+ADD supervisord.conf /etc/supervisord.conf
+RUN mkdir -p /var/log/supervisor
+RUN sed -i -e 's/nodaemon=false/nodaemon=true/' /etc/supervisord.conf
 
-
-# Add startup script
-ADD programs_to_run.sh /Applications/programs_to_run.sh
-#RUN chmod +x /Applications/*.sh
 
 EXPOSE 22
-CMD sh /Applications/programs_to_run.sh
+CMD supervisord -c /etc/supervisord.conf
+
 
 
 
