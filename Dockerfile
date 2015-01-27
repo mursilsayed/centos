@@ -19,6 +19,7 @@ RUN easy_install supervisor
 ADD supervisord.conf /etc/supervisord.conf
 RUN mkdir -p /var/log/supervisor
 RUN sed -i -e 's/nodaemon=false/nodaemon=true/' /etc/supervisord.conf
+RUN yum clean all
 
 
 EXPOSE 22
