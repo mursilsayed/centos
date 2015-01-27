@@ -1,11 +1,8 @@
 FROM centos:centos7
 MAINTAINER Mursil Sayed <mursilsayed@gmail.com>
-#Custom centos6 image with SSH support and a startup script that launches sshd
+#Custom centos7 image with SSH support and a startup script that launches sshd
 
 
-# Cpoying the yum configuring file needed to download packages behind Packages
-#COPY yum.conf /etc/yum.conf
-#RUN echo "proxy=http://172.17.42.1:3128" >> /etc/yum.conf
 
 # Install packages and set up sshd
 RUN yum -y install openssh-server telnet openssh-clients
