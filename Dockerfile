@@ -13,7 +13,11 @@ RUN echo "root:root"|chpasswd
 
 
 # Supervisord dependencies and other needed packages
+#RUN rpm -e cracklib-dicts --nodeps
+
 RUN yum install -y python-meld3 python-setuptools passwd hostname net-tools
+RUN rpm -e cracklib-dicts --nodeps
+RUN yum install -y cracklib-dicts
 # Supervisord Install
 RUN easy_install supervisor
 ADD supervisord.conf /etc/supervisord.conf
