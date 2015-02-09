@@ -1,0 +1,7 @@
+[dvd_on_devserver]
+name=DVD for RHEL7
+#Pointing to the local devserver
+baseurl=http://10.16.132.85:9001/linux-repos/oraclelinux7
+enabled=1
+gpgcheck=0
+

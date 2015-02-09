@@ -1,23 +1,31 @@
-FROM centos:centos7
+FROM mursilsayed/linux:centos7
 MAINTAINER Mursil Sayed <mursilsayed@gmail.com>
-#Custom centos7 image with SSH support and a startup script that launches sshd
+#Custom centos7 image with MariaDB
+#This image is built in office env with local dvd repo at 10.16.132.85:9001/linux-repos/oraclelinux7
 
 
 
 # Install packages and set up sshd
-RUN yum -y install openssh-server telnet openssh-clients python-meld3 python-setuptools passwd hostname net-tools && easy_install supervisor && yum clean all
-RUN ssh-keygen -q -N "" -t dsa -f /etc/ssh/ssh_host_dsa_key && ssh-keygen -q -N "" -t rsa -f /etc/ssh/ssh_host_rsa_key && sed -i "s/#UsePrivilegeSeparation.*/UsePrivilegeSeparation no/g" /etc/ssh/sshd_config && sed -i "s/UsePAM.*/UsePAM no/g" /etc/ssh/sshd_config && echo "root:root"|chpasswd
+
+VOLUME /var/lib/mysql
+
+ADD customconfig /var/lib/mysql/customconfig/
+
+#Copying the path to the local DVD repository; this can be commented if you have high speed internet connection
+ADD dvd.repo /etc/yum.repos.d/
+ 
+RUN rm -f /etc/yum.repos.d/Ce* \
+&& yum -y install mariadb-server mariadb bind-utils pwgen psmisc\
+&& yum clean all
+
 
 
 # Supervisord Install
  
-ADD supervisord.conf /etc/supervisord.conf
 
-RUN mkdir -p /var/log/supervisor && sed -i -e 's/nodaemon=false/nodaemon=true/' /etc/supervisord.conf
 
-EXPOSE 22
+EXPOSE 3306
 
-CMD supervisord -c /etc/supervisord.conf
 
 
 
